@@ -1,0 +1,102 @@
+# Configuración de Decap CMS
+# Documentación: https://decapcms.org/docs/
+
+backend:
+  name: github
+  repo: coysegur-beep/atlas         # cambiar si el repo se renombra
+  branch: main
+  base_url: https://api.netlify.com  # OAuth gateway (ver instrucciones de auth)
+  # Alternativa para auth simple sin Netlify: usar git-gateway (requiere Netlify Identity)
+
+# Para evitar dependencia de Netlify, podemos usar GitHub OAuth directo
+# configurando un OAuth App en github.com/settings/developers
+
+publish_mode: editorial_workflow  # permite borradores con flujo "draft → review → published"
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+site_url: https://grupoempresarialatenas.com
+display_url: https://grupoempresarialatenas.com
+logo_url: /img/logo-atenas.png
+locale: 'es'
+
+collections:
+  # ─── NOTICIAS ────────────────────────────────────
+  - name: "noticias"
+    label: "Noticias"
+    label_singular: "Noticia"
+    folder: "src/content/noticias"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    preview_path: "noticias/{{slug}}"
+    summary: "{{title}} — {{category}} ({{publishDate | date('YYYY-MM-DD')}})"
+    sortable_fields: ['publishDate', 'title', 'category']
+    view_filters:
+      - label: "Borradores"
+        field: draft
+        pattern: true
+      - label: "Publicadas"
+        field: draft
+        pattern: false
+      - label: "Destacadas"
+        field: featured
+        pattern: true
+    fields:
+      - { label: "Título", name: "title", widget: "string", hint: "El título principal de la noticia" }
+      - { label: "Resumen", name: "description", widget: "text", hint: "1-2 líneas que resumen la noticia (aparece en listado y SEO)" }
+      - { label: "Fecha de publicación", name: "publishDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, picker_utc: false }
+      - { label: "Última actualización", name: "modifiedDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, required: false }
+      - { label: "Autor", name: "author", widget: "string", default: "Equipo Atenas" }
+      - label: "Categoría"
+        name: "category"
+        widget: "select"
+        options:
+          - "Normativa"
+          - "Tecnología"
+          - "Casos de éxito"
+          - "Tips de seguridad"
+          - "Empresa"
+          - "Eventos"
+      - { label: "Imagen destacada", name: "image", widget: "image", required: false, hint: "Recomendado: 1200x630px para mejor visualización en redes" }
+      - { label: "Texto alternativo de imagen", name: "imageAlt", widget: "string", required: false, hint: "Descripción de la imagen para accesibilidad y SEO" }
+      - { label: "Destacada", name: "featured", widget: "boolean", default: false, hint: "Aparece como noticia principal en el listado" }
+      - { label: "Borrador", name: "draft", widget: "boolean", default: false, hint: "Si está activo, no aparece publicada" }
+      - label: "SEO (opcional — avanzado)"
+        name: "seo"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Título SEO personalizado", name: "metaTitle", widget: "string", required: false }
+          - { label: "Descripción SEO personalizada", name: "metaDescription", widget: "string", required: false }
+      - label: "Contenido"
+        name: "body"
+        widget: "markdown"
+        hint: "Escribe el contenido aquí. Puedes usar formato, imágenes, listas, citas, etc."
+
+  # ─── SERVICIOS ────────────────────────────────────
+  - name: "servicios"
+    label: "Servicios"
+    label_singular: "Servicio"
+    folder: "src/content/servicios"
+    create: true
+    delete: false
+    slug: "{{slug}}"
+    fields:
+      - { label: "Título", name: "title", widget: "string" }
+      - { label: "Slug (URL)", name: "slug", widget: "string", hint: "Sin espacios, en minúsculas. Ej: vigilancia" }
+      - { label: "Descripción corta", name: "shortDescription", widget: "text" }
+      - { label: "Descripción completa", name: "description", widget: "text" }
+      - label: "Ícono"
+        name: "icon"
+        widget: "select"
+        options: ["shield", "users", "monitor", "file-search"]
+      - { label: "Orden", name: "order", widget: "number", default: 0 }
+      - { label: "Características", name: "features", widget: "list", required: false, hint: "Lista de beneficios o características" }
+      - { label: "Sectores", name: "sectors", widget: "list", required: false, hint: "Industrias donde se aplica este servicio" }
+      - { label: "Imagen", name: "image", widget: "image", required: false }
+      - label: "Contenido detallado"
+        name: "body"
+        widget: "markdown"

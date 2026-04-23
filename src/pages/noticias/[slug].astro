@@ -1,0 +1,138 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TopBar from '@/components/TopBar.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
+
+export async function getStaticPaths() {
+  const noticias = await getCollection('noticias', ({ data }) => !data.draft);
+  return noticias.map((noticia) => ({
+    params: { slug: noticia.slug },
+    props: { noticia },
+  }));
+}
+
+interface Props {
+  noticia: CollectionEntry<'noticias'>;
+}
+
+const { noticia } = Astro.props;
+const { Content } = await noticia.render();
+const { data } = noticia;
+
+// Noticias relacionadas (misma categoría, excluyendo la actual)
+const allNoticias = await getCollection('noticias', ({ data }) => !data.draft);
+const related = allNoticias
+  .filter((n) => n.slug !== noticia.slug && n.data.category === data.category)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title={data.seo?.metaTitle || data.title}
+  description={data.seo?.metaDescription || data.description}
+  type="article"
+  publishDate={data.publishDate}
+  modifiedDate={data.modifiedDate}
+  author={data.author}
+  image={data.image}
+  schemaType="article"
+  schemaData={{
+    keywords: data.category,
+    articleSection: data.category,
+  }}
+>
+  <TopBar />
+  <Header />
+
+  <article class="bg-white">
+    <!-- Hero del artículo -->
+    <div class="bg-gradient-to-br from-atenas-azul-darker to-atenas-azul-deep text-white py-20">
+      <div class="container-tight">
+        <nav aria-label="Migas de pan" class="text-[13px] text-white/60 mb-8">
+          <a href="/" class="hover:text-atenas-dorado">Inicio</a>
+          <span class="mx-2">/</span>
+          <a href="/noticias" class="hover:text-atenas-dorado">Noticias</a>
+          <span class="mx-2">/</span>
+          <span class="text-white/80">{data.title}</span>
+        </nav>
+
+        <div class="flex items-center gap-3 mb-6">
+          <span class="bg-atenas-dorado/15 text-atenas-dorado px-3 py-1 rounded-full text-[12px] font-semibold uppercase tracking-wider">{data.category}</span>
+          <time class="text-white/60 text-[13px]" datetime={data.publishDate.toISOString()}>
+            {data.publishDate.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </time>
+        </div>
+
+        <h1 class="font-serif font-normal text-white mb-6" style="font-size: clamp(32px, 4.5vw, 56px); line-height: 1.1; letter-spacing: -0.02em;">
+          {data.title}
+        </h1>
+
+        <p class="text-white/80 text-[19px] leading-[1.6] max-w-[700px]">{data.description}</p>
+
+        <div class="mt-8 flex items-center gap-3 text-[14px] text-white/60">
+          <span>Por <strong class="text-white">{data.author}</strong></span>
+        </div>
+      </div>
+    </div>
+
+    {data.image && (
+      <div class="container-tight -mt-10 mb-12 relative z-10">
+        <img src={data.image} alt={data.imageAlt || data.title} class="w-full aspect-[16/9] object-cover rounded-md" />
+      </div>
+    )}
+
+    <!-- Contenido del artículo -->
+    <div class="container-tight py-16">
+      <div class="prose prose-lg max-w-none
+        prose-headings:font-serif prose-headings:text-atenas-azul-deep prose-headings:font-medium
+        prose-h2:text-[32px] prose-h2:mt-12 prose-h2:mb-5
+        prose-h3:text-[24px] prose-h3:mt-10 prose-h3:mb-4
+        prose-p:text-text prose-p:text-[17px] prose-p:leading-[1.8] prose-p:mb-6
+        prose-a:text-atenas-azul prose-a:no-underline hover:prose-a:underline
+        prose-strong:text-atenas-azul-deep
+        prose-img:rounded-md
+        prose-blockquote:border-l-atenas-dorado prose-blockquote:bg-atenas-dorado/[0.04] prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:not-italic
+        prose-ul:my-6 prose-li:my-2">
+        <Content />
+      </div>
+
+      <!-- Compartir -->
+      <div class="mt-16 pt-8 border-t border-text/[0.08] flex items-center gap-4 flex-wrap">
+        <span class="text-[13px] uppercase tracking-wider text-text-muted font-semibold">Compartir:</span>
+        <a href={`https://wa.me/?text=${encodeURIComponent(data.title + ' ' + Astro.url.href)}`} target="_blank" rel="noopener" class="text-text-muted hover:text-atenas-azul transition-colors text-[14px] flex items-center gap-1.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24z"/></svg>
+          WhatsApp
+        </a>
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url.href}`} target="_blank" rel="noopener" class="text-text-muted hover:text-atenas-azul transition-colors text-[14px]">Facebook</a>
+        <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(data.title)}&url=${Astro.url.href}`} target="_blank" rel="noopener" class="text-text-muted hover:text-atenas-azul transition-colors text-[14px]">Twitter</a>
+      </div>
+    </div>
+
+    <!-- Noticias relacionadas -->
+    {related.length > 0 && (
+      <section class="bg-bg py-20 border-t border-text/[0.08]">
+        <div class="container-wide">
+          <div class="section-eyebrow">Sigue leyendo</div>
+          <h2 class="font-serif text-atenas-azul-deep mb-12" style="font-size: 36px;">Noticias relacionadas</h2>
+          <div class="grid md:grid-cols-3 gap-8">
+            {related.map((n) => (
+              <a href={`/noticias/${n.slug}`} class="group block">
+                <div class="aspect-[4/3] bg-gradient-to-br from-atenas-azul to-atenas-azul-deep rounded-md overflow-hidden mb-4">
+                  {n.data.image && <img src={n.data.image} alt={n.data.imageAlt || n.data.title} class="w-full h-full object-cover" />}
+                </div>
+                <span class="text-atenas-dorado text-[12px] font-semibold uppercase tracking-wider">{n.data.category}</span>
+                <h3 class="font-serif font-medium text-[20px] text-atenas-azul-deep leading-tight mt-2 group-hover:text-atenas-azul transition-colors">{n.data.title}</h3>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </article>
+
+  <Footer />
+  <WhatsAppFloat />
+</BaseLayout>

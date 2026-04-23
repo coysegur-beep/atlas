@@ -1,0 +1,64 @@
+---
+import { SITE, SERVICIOS } from '@/lib/config';
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-atenas-azul-darker text-white/70 pt-20">
+  <div class="container-wide">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-12 pb-15 border-b border-white/[0.08]">
+      <div>
+        <img src="/img/logo-atenas.png" alt={SITE.name} class="h-15 mb-6 brightness-0 invert" width="392" height="140" />
+        <p class="text-[14.5px] leading-7 mb-6">
+          {SITE.founded ? `${new Date().getFullYear() - SITE.founded} años` : '27 años'} brindando soluciones de seguridad privada en Barranquilla y la región Caribe colombiana.
+        </p>
+        <div class="space-y-3 text-[14px]">
+          <div class="flex gap-3 items-start">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-atenas-dorado mt-0.5 flex-shrink-0">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>{SITE.contact.address.city}, {SITE.contact.address.region} — {SITE.contact.address.country}</span>
+          </div>
+          <div class="flex gap-3 items-start">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-atenas-dorado mt-0.5 flex-shrink-0">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            <a href={SITE.contact.phoneHref} class="hover:text-atenas-dorado transition-colors">{SITE.contact.phone}</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h5 class="text-white text-[14px] uppercase tracking-[0.1em] mb-6 font-semibold font-sans">Servicios</h5>
+        <ul class="list-none space-y-3">
+          {SERVICIOS.map((s) => (
+            <li><a href={`/servicios/${s.slug}`} class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">{s.nombre}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-white text-[14px] uppercase tracking-[0.1em] mb-6 font-semibold font-sans">Empresa</h5>
+        <ul class="list-none space-y-3">
+          <li><a href="/nosotros" class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">Sobre nosotros</a></li>
+          <li><a href="/sistema-integrado-gestion" class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">Sistema de gestión</a></li>
+          <li><a href="/noticias" class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">Noticias</a></li>
+          <li><a href="/contacto" class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-white text-[14px] uppercase tracking-[0.1em] mb-6 font-semibold font-sans">Legal</h5>
+        <ul class="list-none space-y-3">
+          <li><a href="/legal/tratamiento-datos" class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">Tratamiento de datos</a></li>
+          <li><a href="/legal/cookies" class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">Política de cookies</a></li>
+          <li><a href="/legal/etica" class="text-white/60 hover:text-atenas-dorado transition-colors text-[14.5px]">Código de ética</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="py-7 flex justify-between flex-wrap gap-4 text-[13px] text-white/50">
+      <span>© {currentYear} {SITE.name} Todos los derechos reservados.</span>
+      <span>Vigilado Supervigilancia</span>
+    </div>
+  </div>
+</footer>

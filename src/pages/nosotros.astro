@@ -1,0 +1,58 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TopBar from '@/components/TopBar.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
+import { SITE } from '@/lib/config';
+
+const yearsOfExperience = new Date().getFullYear() - SITE.founded;
+---
+
+<BaseLayout
+  title="Sobre nosotros"
+  description={`${yearsOfExperience} años brindando soluciones de seguridad privada en Barranquilla. Conoce nuestra historia, misión y valores.`}
+>
+  <TopBar />
+  <Header />
+
+  <section class="bg-gradient-to-br from-atenas-azul-darker to-atenas-azul-deep text-white py-24">
+    <div class="container-wide">
+      <div class="section-eyebrow">Quiénes somos</div>
+      <h1 class="font-serif font-normal text-white max-w-[800px]" style="font-size: clamp(40px, 5vw, 64px); line-height: 1.1; letter-spacing: -0.02em;">
+        Una tradición de <span class="italic text-atenas-dorado">protección institucional.</span>
+      </h1>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="container-tight">
+      <p class="text-[19px] leading-[1.8] text-text mb-8">
+        En <strong>{SITE.name}</strong> nos enorgullece ofrecer servicios de seguridad confiables y de calidad en {SITE.contact.address.city}, {SITE.contact.address.region}. Con <strong>{yearsOfExperience} años de experiencia</strong> en el sector, nuestro equipo de profesionales altamente capacitados está comprometido en brindar soluciones efectivas y personalizadas para proteger a nuestros clientes y sus activos.
+      </p>
+      <p class="text-[18px] leading-[1.8] text-text-muted mb-12">
+        Nos esforzamos por mantenernos a la vanguardia de las últimas tecnologías y tendencias en seguridad, garantizando así la tranquilidad y satisfacción de nuestros clientes en todo momento.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-8 my-16">
+        <div class="bg-white border border-text/[0.08] p-8 rounded-md">
+          <div class="w-12 h-12 bg-atenas-azul/10 rounded-md flex items-center justify-center mb-5 text-atenas-azul">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          </div>
+          <h3 class="font-serif text-[24px] text-atenas-azul-deep mb-3">Misión</h3>
+          <p class="text-text-muted leading-[1.7]">Brindar servicios integrales de seguridad privada con personal certificado, tecnología de vanguardia y compromiso institucional, garantizando la protección de las personas, activos e información de nuestros clientes.</p>
+        </div>
+        <div class="bg-white border border-text/[0.08] p-8 rounded-md">
+          <div class="w-12 h-12 bg-atenas-dorado/10 rounded-md flex items-center justify-center mb-5 text-atenas-dorado">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3 class="font-serif text-[24px] text-atenas-azul-deep mb-3">Visión</h3>
+          <p class="text-text-muted leading-[1.7]">Ser reconocidos como la empresa líder de seguridad privada en la región Caribe colombiana, distinguidos por nuestra excelencia operacional, innovación tecnológica y compromiso con el desarrollo sostenible.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+  <WhatsAppFloat />
+</BaseLayout>

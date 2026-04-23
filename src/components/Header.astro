@@ -1,0 +1,65 @@
+---
+import { NAV_LINKS } from '@/lib/config';
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-text/[0.08]">
+  <nav class="container-wide">
+    <div class="flex justify-between items-center py-4">
+      <a href="/" class="block">
+        <img src="/img/logo-atenas.png" alt="Atenas Seguridad Privada Ltda." class="h-14 w-auto" width="392" height="140" />
+      </a>
+      
+      <ul class="hidden lg:flex gap-9 items-center list-none">
+        {NAV_LINKS.map((link) => (
+          <li>
+            <a 
+              href={link.href} 
+              class:list={[
+                "relative text-text font-medium text-[14.5px] tracking-wide transition-colors hover:text-atenas-azul",
+                "after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-0 after:h-0.5 after:bg-atenas-dorado after:transition-all hover:after:w-full",
+                { "text-atenas-azul after:w-full": currentPath === link.href }
+              ]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href="/contacto" class="bg-atenas-azul text-white px-5 py-3 rounded text-[14.5px] font-semibold hover:bg-atenas-azul-deep hover:-translate-y-0.5 transition-all inline-block">
+            Solicitar cotización
+          </a>
+        </li>
+      </ul>
+
+      <button id="mobile-menu-btn" class="lg:hidden p-2" aria-label="Abrir menú">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobile-menu" class="lg:hidden hidden pb-6">
+      <ul class="flex flex-col gap-4">
+        {NAV_LINKS.map((link) => (
+          <li>
+            <a href={link.href} class="block py-2 text-text font-medium hover:text-atenas-azul">
+              {link.label}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href="/contacto" class="bg-atenas-azul text-white px-5 py-3 rounded font-semibold inline-block w-full text-center">
+            Solicitar cotización
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+</script>

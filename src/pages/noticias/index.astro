@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TopBar from '@/components/TopBar.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
+
+const allNoticias = await getCollection('noticias', ({ data }) => !data.draft);
+const sortedNoticias = allNoticias.sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+const featured = sortedNoticias.find((n) => n.data.featured) || sortedNoticias[0];
+const rest = sortedNoticias.filter((n) => n.slug !== featured?.slug);
+---
+
+<BaseLayout
+  title="Noticias e información del sector seguridad"
+  description="Noticias, normativas, tips de seguridad y casos de éxito del sector vigilancia y seguridad privada en Colombia."
+>
+  <TopBar />
+  <Header />
+
+  <section class="bg-gradient-to-br from-atenas-azul-darker to-atenas-azul-deep text-white py-24">
+    <div class="container-wide">
+      <div class="section-eyebrow">Sala de prensa</div>
+      <h1 class="font-serif font-normal text-white max-w-[800px]" style="font-size: clamp(40px, 5vw, 64px); line-height: 1.1; letter-spacing: -0.02em;">
+        Noticias <span class="italic text-atenas-dorado">e información</span> del sector.
+      </h1>
+      <p class="text-white/75 text-[18px] mt-6 max-w-[600px]">
+        Mantente informado sobre normativas, casos de éxito y tendencias en seguridad privada.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="container-wide">
+      {sortedNoticias.length === 0 ? (
+        <div class="text-center py-20">
+          <p class="text-text-muted text-lg">Aún no hay noticias publicadas. Vuelve pronto.</p>
+        </div>
+      ) : (
+        <>
+          {featured && (
+            <a href={`/noticias/${featured.slug}`} class="block mb-16 group">
+              <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="aspect-[4/3] bg-gradient-to-br from-atenas-azul to-atenas-azul-deep rounded-md overflow-hidden">
+                  {featured.data.image && (
+                    <img src={featured.data.image} alt={featured.data.imageAlt || featured.data.title} class="w-full h-full object-cover" />
+                  )}
+                </div>
+                <div>
+                  <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-atenas-dorado/15 text-atenas-dorado px-3 py-1 rounded-full text-[12px] font-semibold uppercase tracking-wider">{featured.data.category}</span>
+                    <time class="text-text-muted text-[13px]">{featured.data.publishDate.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+                  </div>
+                  <h2 class="font-serif font-medium text-atenas-azul-deep mb-4 group-hover:text-atenas-azul transition-colors" style="font-size: clamp(28px, 3.5vw, 42px); line-height: 1.15;">
+                    {featured.data.title}
+                  </h2>
+                  <p class="text-text-muted text-[17px] leading-[1.7] mb-6">{featured.data.description}</p>
+                  <span class="text-atenas-azul font-semibold inline-flex items-center gap-2 group-hover:gap-3 transition-all">
+                    Leer artículo completo
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </span>
+                </div>
+              </div>
+            </a>
+          )}
+
+          {rest.length > 0 && (
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 pt-16 border-t border-text/[0.08]">
+              {rest.map((noticia) => (
+                <a href={`/noticias/${noticia.slug}`} class="group block">
+                  <div class="aspect-[4/3] bg-gradient-to-br from-atenas-azul to-atenas-azul-deep rounded-md overflow-hidden mb-5">
+                    {noticia.data.image && (
+                      <img src={noticia.data.image} alt={noticia.data.imageAlt || noticia.data.title} class="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div class="flex items-center gap-3 mb-3">
+                    <span class="text-atenas-dorado text-[12px] font-semibold uppercase tracking-wider">{noticia.data.category}</span>
+                    <time class="text-text-light text-[12px]">{noticia.data.publishDate.toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })}</time>
+                  </div>
+                  <h3 class="font-serif font-medium text-[22px] text-atenas-azul-deep leading-[1.25] group-hover:text-atenas-azul transition-colors mb-3">
+                    {noticia.data.title}
+                  </h3>
+                  <p class="text-text-muted text-[14.5px] leading-[1.65] line-clamp-3">{noticia.data.description}</p>
+                </a>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  </section>
+
+  <Footer />
+  <WhatsAppFloat />
+</BaseLayout>

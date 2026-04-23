@@ -1,0 +1,46 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TopBar from '@/components/TopBar.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
+import { SERVICIOS } from '@/lib/config';
+---
+
+<BaseLayout
+  title="Servicios de seguridad privada"
+  description="Vigilancia, escoltas, medios tecnológicos y estudios de seguridad. Soluciones conforme a tus necesidades en Barranquilla y el Atlántico."
+>
+  <TopBar />
+  <Header />
+
+  <section class="bg-gradient-to-br from-atenas-azul-darker to-atenas-azul-deep text-white py-24">
+    <div class="container-wide">
+      <div class="section-eyebrow">Servicios</div>
+      <h1 class="font-serif font-normal text-white max-w-[800px]" style="font-size: clamp(40px, 5vw, 64px); line-height: 1.1; letter-spacing: -0.02em;">
+        Soluciones <span class="italic text-atenas-dorado">conforme a tus necesidades</span> en seguridad.
+      </h1>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="container-wide">
+      <div class="grid md:grid-cols-2 gap-6">
+        {SERVICIOS.map((s, i) => (
+          <a href={`/servicios/${s.slug}`} class="group bg-white border border-text/[0.08] p-10 rounded-md transition-all duration-300 hover:-translate-y-1 hover:border-atenas-azul hover:shadow-[0_20px_40px_rgba(10,31,77,0.08)] block">
+            <div class="font-serif text-[14px] text-atenas-dorado italic tracking-[0.05em] mb-5">— Servicio {String(i + 1).padStart(2, '0')}</div>
+            <h2 class="font-serif font-medium text-[28px] text-atenas-azul-deep mb-4">{s.nombre}</h2>
+            <p class="text-text-muted text-[15px] leading-[1.7] mb-6">{s.descripcionCorta}</p>
+            <span class="text-atenas-azul text-[14px] font-semibold inline-flex items-center gap-2 group-hover:gap-3.5 transition-all">
+              Conocer más
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+  <WhatsAppFloat />
+</BaseLayout>

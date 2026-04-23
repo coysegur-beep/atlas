@@ -1,0 +1,115 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TopBar from '@/components/TopBar.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import WhatsAppFloat from '@/components/WhatsAppFloat.astro';
+import { SERVICIOS } from '@/lib/config';
+
+export function getStaticPaths() {
+  return SERVICIOS.map((s) => ({
+    params: { slug: s.slug },
+    props: { servicio: s },
+  }));
+}
+
+interface Props {
+  servicio: typeof SERVICIOS[number];
+}
+
+const { servicio } = Astro.props;
+
+// Contenido específico por servicio (ampliable después)
+const detalles: Record<string, { fullText: string; benefits: string[]; sectors: string[] }> = {
+  'vigilancia': {
+    fullText: 'Personal altamente calificado y entrenado conforme a las normas de la Supervigilancia y estándares de calidad internacional. El vigilante cuenta con dotación de radio y GPS, lo que permite la comunicación permanente con las redes de apoyo de la Policía Nacional, así como un equipo de reacción inmediata en caso de emergencia.',
+    benefits: ['Personal certificado y entrenado', 'Dotación con radio y GPS', 'Comunicación con redes de apoyo Policía Nacional', 'Equipo de reacción inmediata', 'Vigilancia fija y móvil', 'Cobertura 24/7'],
+    sectors: ['Propiedad horizontal', 'Industrial', 'Comercial', 'Educativo', 'Salud', 'Gubernamental'],
+  },
+  'escoltas': {
+    fullText: 'Personal entrenado en protección especial a personas con alto riesgo en seguridad. Nuestros profesionales están calificados para garantizar su seguridad en desplazamientos y eventos públicos. El escolta cuenta con la dotación de radio y GPS que permite la comunicación permanente con las redes de apoyo de la Policía Nacional.',
+    benefits: ['Profesionales especializados', 'Análisis de riesgo previo', 'Logística de desplazamientos', 'Coordinación con autoridades', 'Discreción absoluta', 'Disponibilidad 24/7'],
+    sectors: ['Ejecutivos empresariales', 'Funcionarios públicos', 'Personalidades', 'Eventos públicos', 'Diplomáticos'],
+  },
+  'medios-tecnologicos': {
+    fullText: 'Nuestro Departamento de Tecnología en Informática está en constante desarrollo e investigación. Su objetivo es complementar la seguridad en áreas sensibles, constituyendo una herramienta eficaz para disminuir riesgos y mejorar controles. La seguridad electrónica está compuesta por CCTV, alarmas, control de acceso, GPS, localización vehicular y monitoreo de estos desde la central de Atenas.',
+    benefits: ['CCTV de alta definición', 'Sistemas de alarma inteligente', 'Control de acceso biométrico', 'GPS y localización vehicular', 'Monitoreo 24/7 desde central propia', 'Análisis de video con IA'],
+    sectors: ['Empresas', 'Bodegas y centros logísticos', 'Edificios corporativos', 'Conjuntos residenciales', 'Flotas vehiculares'],
+  },
+  'estudios-de-seguridad': {
+    fullText: 'Realizado por personal entrenado, capacitado y con experiencia en selección y contratación de personal. Atenas entrega informes que incluyen aspectos del entorno laboral, jurídico, así como del entorno familiar y social. Cuando el cliente lo requiera, se organizan talleres para capacitarlos en el manejo de situaciones que ameriten.',
+    benefits: ['Verificación de antecedentes', 'Análisis del entorno laboral', 'Investigación del entorno jurídico', 'Estudio del entorno familiar y social', 'Informes detallados y confidenciales', 'Talleres de capacitación opcionales'],
+    sectors: ['Procesos de selección', 'Cargos de confianza', 'Auditorías internas', 'Empresas de cualquier tamaño'],
+  },
+};
+
+const detalle = detalles[servicio.slug];
+---
+
+<BaseLayout
+  title={servicio.nombre}
+  description={servicio.descripcionCorta}
+  schemaType="service"
+>
+  <TopBar />
+  <Header />
+
+  <section class="bg-gradient-to-br from-atenas-azul-darker to-atenas-azul-deep text-white py-24">
+    <div class="container-wide">
+      <nav class="text-[13px] text-white/60 mb-8">
+        <a href="/" class="hover:text-atenas-dorado">Inicio</a>
+        <span class="mx-2">/</span>
+        <a href="/servicios" class="hover:text-atenas-dorado">Servicios</a>
+        <span class="mx-2">/</span>
+        <span class="text-white/80">{servicio.nombre}</span>
+      </nav>
+      <div class="section-eyebrow">Servicio especializado</div>
+      <h1 class="font-serif font-normal text-white max-w-[800px]" style="font-size: clamp(40px, 5vw, 64px); line-height: 1.1; letter-spacing: -0.02em;">
+        {servicio.nombre}
+      </h1>
+      <p class="text-white/80 text-[19px] mt-6 max-w-[700px]">{servicio.descripcionCorta}</p>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="container-tight">
+      <p class="text-[18px] leading-[1.8] text-text mb-12">{detalle?.fullText}</p>
+
+      {detalle?.benefits && (
+        <div class="mb-16">
+          <div class="section-eyebrow">Beneficios</div>
+          <h2 class="font-serif text-atenas-azul-deep mb-8" style="font-size: 36px;">Lo que incluye este servicio</h2>
+          <div class="grid sm:grid-cols-2 gap-4">
+            {detalle.benefits.map((b) => (
+              <div class="flex gap-3 items-start p-4 border border-text/[0.08] rounded-md">
+                <svg class="w-5 h-5 text-atenas-dorado flex-shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="text-text">{b}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {detalle?.sectors && (
+        <div class="mb-16">
+          <div class="section-eyebrow">Sectores</div>
+          <h2 class="font-serif text-atenas-azul-deep mb-8" style="font-size: 36px;">¿Para quién es este servicio?</h2>
+          <div class="flex flex-wrap gap-3">
+            {detalle.sectors.map((s) => (
+              <span class="bg-atenas-azul/5 text-atenas-azul border border-atenas-azul/20 px-4 py-2 rounded-full text-[14px] font-medium">{s}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="bg-gradient-to-br from-atenas-azul-darker to-atenas-azul-deep text-white p-12 rounded-md text-center">
+        <h3 class="font-serif text-[32px] mb-4">¿Necesitas este servicio?</h3>
+        <p class="text-white/80 mb-8 max-w-[500px] mx-auto">Cotización personalizada en menos de 24 horas. Hablemos de tu caso.</p>
+        <a href="/contacto" class="btn btn-primary">Solicitar cotización</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+  <WhatsAppFloat />
+</BaseLayout>
